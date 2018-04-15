@@ -10,7 +10,7 @@ import re
 conn = pymysql.connect(host='192.168.xx.xx', 
                        unix_socket='/tmp/mysql.sock', 
                        user='root', 
-                       passwd='xx', 
+                       passwd='xxxxxxx', 
                        db='tempdata',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -44,8 +44,8 @@ while line:
     if line == ' ':
         print ('\n************************************************************\n')
         l.write('\n************************************************************\n')
-        l.write('Info - ' + str(info) + '\n') 
-        l.write('Fixed!1 - Line' + ' ' + str(line) + '\n')
+        l.write('Info - ' + str(count) + str(info) + '\n') 
+        l.write('Fixed!1 - Line' + ' ' + str(count) + str(info) + '\n')
         print ('\n************************************************************\n')
         l.write('************************************************************\n\n')
         line = lastdate + ',' + lasttemp
@@ -53,8 +53,8 @@ while line:
     if line == '':
         print ('\n************************************************************\n')
         l.write('\n************************************************************\n')
-        l.write('Info - ' + str(info) + '\n') 
-        l.write('Fixed!0 - Line ' + ' ' + str(line) + '\n')
+        l.write('Info - ' + str(count) + str(info) + '\n') 
+        l.write('Fixed!0 - Line ' + ' ' + str(count) + str(info) + '\n')
         print ('\n************************************************************\n')
         l.write('************************************************************\n\n')
         line = lastdate + ',' + lasttemp
@@ -68,7 +68,7 @@ while line:
         print ('\n************************************************************\n')
         l.write('\n************************************************************\n')
         print ('Fixed!!', date, lastdate)
-        l.write('Fixed!! - Date - ' + ' ' + str(date)+ ' - ' + str(lastdate) + '\n')
+        l.write('Fixed!! - Date - ' + ' ' + str(count) + str(date)+ ' - ' + str(lastdate) + '\n')
         print ('\n************************************************************\n')
         l.write('************************************************************\n\n')
         date = lastdate
@@ -79,7 +79,7 @@ while line:
         print ('\n************************************************************\n')
         l.write('\n************************************************************\n')
         print ('Fixed!!!', date, lastdate)
-        l.write('Fixed!!! - Date - ' + ' ' + str(date)+ ' - ' + str(lastdate) + '\n')
+        l.write('Fixed!!! - Date - ' + ' ' + str(count) + str(date)+ ' - ' + str(lastdate) + '\n')
         print ('\n************************************************************\n')
         l.write('************************************************************\n\n')
         date = lastdate
@@ -90,7 +90,7 @@ while line:
         print ('\n************************************************************\n')
         l.write('\n************************************************************\n')
         print ('Fixed!!', temp, lasttemp)
-        l.write('Fixed!! - Temp - ' + ' ' + str(temp)+ ' - ' + str(lasttemp) + '\n')
+        l.write('Fixed!! - Temp - ' + ' ' + str(count) + str(temp)+ ' - ' + str(lasttemp) + '\n')
         print ('\n************************************************************\n')
         l.write('************************************************************\n\n')
         temp = lasttemp
@@ -101,7 +101,7 @@ while line:
         print ('\n************************************************************\n')
         l.write('\n************************************************************\n')
         print ('Fixed!!!', temp, lasttemp)
-        l.write('Fixed!!! - Temp - ' + ' ' + str(temp)+ ' - ' + str(lasttemp) + '\n')
+        l.write('Fixed!!! - Temp - ' + ' ' + str(count) + str(temp)+ ' - ' + str(lasttemp) + '\n')
         print ('\n************************************************************\n')
         l.write('************************************************************\n\n')
         temp = lasttemp
@@ -164,7 +164,7 @@ l.write('\n######################################################\n\n')
 cur.execute("SELECT count(*) FROM tempdata")
 for response in cur:
     print(response)
-    l.write('\nDone!!! - ' + ' ' + str(response) + '\n')
+    l.write('\nDone!!! - ' + ' ' + str(count) + str(response) + '\n')
 cur.close()
 print ('\n######################################################\n\n')
 l.write('######################################################\n\n')
@@ -174,3 +174,4 @@ f.close()
 l.close()
 
 exit()
+
