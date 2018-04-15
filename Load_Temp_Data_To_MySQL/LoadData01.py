@@ -7,17 +7,18 @@ from dateutil import parser
 import pymysql.cursors
 import re
 
-conn = pymysql.connect(host='192.168.xx.xx', 
+conn = pymysql.connect(host='192.168.5.64', 
                        unix_socket='/tmp/mysql.sock', 
                        user='root', 
-                       passwd='xxxxxxxxx', 
+                       passwd='aut0mation', 
                        db='tempdata',
                        cursorclass=pymysql.cursors.DictCursor)
 
 conn.autocommit = True
 
 # Open the file with read only permit
-f = open('Cosmic/TempTrak-180411.csv', 'r')
+#f = open('Cosmic/TempTrak-180411.csv', 'r')
+f = open('Cosmic/TempTrak.csv', 'r')
 l = open('Cosmic/TempTrak_Import_Log.txt', 'w')
 # use readline() to read the first line 
 #print ('1 - *****************')
@@ -160,15 +161,17 @@ while line:
 #    print ('*****************')
 
 
-print ('\n######################################################\n\n')
-l.write('\n######################################################\n\n')
-cur.execute("SELECT count(*) FROM tempdata")
-for response in cur:
-    print(response)
-    l.write('\nDone!!! - ' + ' ' + str(Count) + ' ' + str(response) + '\n')
-cur.close()
-print ('\n######################################################\n\n')
-l.write('######################################################\n\n')
+print ('\n######################################################\n')
+l.write('\n######################################################\n')
+with conn.cursor() as cur:
+    cur.execute('SELECT count(*) FROM tempdata')
+    for response in cur:
+        print('Done!!! - ' + ' ' + str(Count) + ' ' + str(response) + '\n')
+        l.write('Done!!! - ' + ' ' + str(Count) + ' ' + str(response) + '\n')
+    conn.commit()
+    cur.close()
+    print ('######################################################\n')
+    l.write('######################################################\n')
 
 conn.close()
 f.close()
