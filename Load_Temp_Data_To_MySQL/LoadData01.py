@@ -7,10 +7,10 @@ from dateutil import parser
 import pymysql.cursors
 import re
 
-conn = pymysql.connect(host='192.168.5.64', 
+conn = pymysql.connect(host='192.168.xx.xx', 
                        unix_socket='/tmp/mysql.sock', 
                        user='root', 
-                       passwd='aut0mation', 
+                       passwd='xxxxxxxxxxxx', 
                        db='tempdata',
                        cursorclass=pymysql.cursors.DictCursor)
 
