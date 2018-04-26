@@ -6,23 +6,22 @@
 #  
 #  V 0.1
 #
-#======================================================================
+#=====================================================================
 
 #======================================================================
 # Start of Main Imports and setup constants
 
 # Module Imports
 import os, sys
-#import Image
+from pathlib import Path
 import argparse                   # Import Argument Parser
 from PIL import Image
-from resizeimage import resizeimage
+#from resizeimage import resizeimage
 import config
+from time import gmtime, strftime
 
 # Setup constants
-size = 300, 300                   # Output Size
-Hight = 300
-Width = 300
+size = config.SIZE                  # Output Size
 
 # Folders
 InputFolder = config.INFOLDER
@@ -39,13 +38,45 @@ FTPPassword = config.FTPPASSWORD
 #======================================================================
 
 #======================================================================
-# Initialisation procedures
+# Initialisation Procedures
 
-# End of Initialisation procedures
+def setuprunlog(RunLog):
+    today = strftime("%Y-%m-%d", gmtime())
+    
+    runlog = 'Run-' + today + '.log'
+        
+    RunLog = open(runlog,"a+")
+    print ('\n\n................... RunLog Opened ........................\n\n')
+
+    return(RunLog)
+
+def setuperrorlog(ErrorLog):
+    today = strftime("%Y-%m-%d", gmtime())
+    
+    errorlog = 'Error-' + today + '.log'
+    
+    ErrorLog = open(errorlog,"a+")
+    print ('\n\n................... ErrorLog Opened ........................\n\n')
+    
+    return(ErrorLog)
+
+    
+# End of Initialisation Procedures
 #======================================================================
 
 #======================================================================
 # Service Procedures
+
+def logging(LogFile, Type, Message):
+
+    #today = strftime("%Y-%m-%d", gmtime())
+    now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+    if Type=='E':
+        LogFile.write(now + Message)
+    elif Type=='R':
+        LogFile.write(now + Message)
+    
 
 # End of Service Procedures    
 #======================================================================
@@ -53,93 +84,92 @@ FTPPassword = config.FTPPASSWORD
 #======================================================================
 # Task Procedures
 
-def imageResize01(inpath, outpath):
-    
-    file_dir=os.path.split(inpath)
+def imageResize(inpath, outpath, size, ErrorLog, RunLog):
+
+    #file_dir=os.path.split(inpath)
 
     Files = os.listdir(inpath) # returns list
-
-    for infile in Files:
-        print ('***********************************************************************************')
-        outfile = os.path.splitext(outpath)[0] + '/' + infile + '.thumbnail'
-        infile = os.path.splitext(inpath)[0] + '/' + infile
-        print('infile - ' + infile)
-        print('outfile - ' + outfile)
-        img = Image.open(infile)
-        if infile != outfile:
-            try:
-                if img.size[0] > img.size[1]:
-                    aspect = img.size[1]/120
-                    new_size = (int(img.size[0])/aspect, 120)
-                else:
-                    aspect = img.size[0]/120
-                    new_size = (120, int(img.size[1]/aspect)
-                
-                img.resize(new_size).save(file_dir[0] + '/ico' + file_dir[1][3:])
-                img = Image.open(file_dir[0] + '/ico' + file_dir[1][3:])
-
-                if img.size[0] > img.size[1]:
-                    new_img = img.crop( (
-                    (((img.size[0])-120)/2), 0,120+(((img.size[0])-120)/2),120 ) )
-                else:
-                    new_img = img.crop( (0,(((img.size[1])-120)/2),120,120+(((img.size[1])-120)/2)) )
-
-                new_img.save(file_dir[0]+'/ico'+file_dir[1][3:])
-            except IOError:
-                print ("cannot create thumbnail for '%s'" % infile)
-
-
-def imageResize02(inpath, outpath):
-
-  print(inpath)
-  for infile in inpath:
-      print(infile)
-      outfile = os.path.splitext(outpath)[0] + ".thumbnail"
-      # print(outfile + '\n')
-      if infile != outfile:
-          try:
-              im = Image.open(infile)
-              im.thumbnail(size, Image.ANTIALIAS)
-              im.save(outfile, "JPEG")
-          except IOError:
-            print ("cannot create thumbnail for '%s'" % infile)
-
-def imageResize03(in_file, out_file, size):
-
-    with open(in_file) as fd:
-        image = resizeimage.resize_thumbnail(Image.open(fd), size)
-    image.save(out_file)
-    image.close()
-
-def imageResize04(inpath, outpath):
-
-    #Files = glob.glob(inpath)
-    size = 300, 300
-    
-    Files = os.listdir(inpath) # returns list
-
+   
     #print(Files)
     for infile in Files:
         print ('***********************************************************************************')
-        print(infile)
+        logging(RunLog, 'R', ' ***********************************************************************************\n')
+        #print(infile)
+        #print(outpath)
+        outfile = os.path.splitext(outpath)[0] + '/' + infile
         infile = os.path.splitext(inpath)[0] + '/' + infile
-        outfile = os.path.splitext(outpath)[0] + '/' + infile + '.thumbnail'
-        print(outfile)
-        if infile != outfile:
-            try:
-                print ('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-                im = Image.open(infile)
-                print ('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
-                im.thumbnail(size, Image.ANTIALIAS)
-                print ('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-                im.save(outfile, "JPEG")
-                print ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-            except IOError:
-                print ("cannot create thumbnail for '%s'" % infile)
+        filetype = os.path.splitext(infile)[1]
+        print('File Type\t- ' + filetype)
+        print('Output File\t- ' + outfile)
+        logging(RunLog, 'R', ' File Type\t- ' + filetype + '\n')
+        logging(RunLog, 'R', ' Output File\t- ' + outfile + '\n')
 
+        if filetype == '.jpg' or filetype == '.JPG':
+            if infile != outfile:
+                try:
+                    im = Image.open(infile)
+                    im.thumbnail(size, Image.ANTIALIAS)
+                    im.save(outfile, "JPEG")
+                except IOError:
+                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+        elif filetype == '.gif' or filetype == '.GIF':
+            if infile != outfile:
+                try:
+                    im = Image.open(infile)
+                    im.thumbnail(size, Image.ANTIALIAS)
+                    im.save(outfile, "GIF")
+                except IOError:
+                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+        elif filetype == '.png' or filetype == '.PNG':
+            if infile != outfile:
+                try:
+                    im = Image.open(infile)
+                    im.thumbnail(size, Image.ANTIALIAS)
+                    im.save(outfile, "PNG")
+                except IOError:
+                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+        elif filetype == '.bmp' or filetype == '.BMP':
+            if infile != outfile:
+                try:
+                    im = Image.open(infile)
+                    im.thumbnail(size, Image.ANTIALIAS)
+                    im.save(outfile, "BMP")
+                except IOError:
+                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)    
+                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+        else:
+            print('\n********************************** Not Processed **********************************\n')
+            logging(RunLog, 'R', ' ********************************** Not Processed **********************************\n')
+            logging(ErrorLog, 'E', ' ********************************** Not Processed **********************************\n')
+            logging(ErrorLog, 'E', ' ' + infile + '\n')
 
-
+        # EndIf
+    print(' ***********************************************************************************')
+    logging(RunLog, 'R', ' ***********************************************************************************\n')
 # End of Task Procedures    
+#======================================================================
+
+#======================================================================
+# Shutdown Procedures
+
+def cleanup(RunLog, ErrorLog):
+    
+    RunLog.close()
+    print ('\n................... RunLog Closed ........................\n')
+    ErrorLog.close()
+    print ('................... ErrorLog Closed ........................\n\n')
+    
+    
+    
+    
+# End of Shutdown Procedures
 #======================================================================
 
 #======================================================================            
@@ -210,25 +240,38 @@ if __name__ == '__main__': # The Program will start from here
     
         
     print ('\n\nSetting Up ...\n')
-   
+    #RunLog = setuprunlog(RunLog)
+    #ErrorLog = setuperrorlog(ErrorLog)
+
+    today = strftime("%Y-%m-%d", gmtime())
+    now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+    runlog = 'Run-' + today + '.log'
+    RunLog = open(runlog,"a+")
+    print ('\n\n................... RunLog Opened ........................\n\n')
+
+    errorlog = 'Error-' + today + '.log'
+    ErrorLog = open(errorlog,"a+")
+    print ('\n\n................... ErrorLog Opened ........................\n\n')
+    
+    logging(RunLog, 'R', (' *** Start Run ***\n\n'))
+    logging(ErrorLog, 'E', (' *** Start Run ***\n\n'))
     print ('\nGo ...\n\n')
 
-    # InputFolder = config.INFOLDER
-    # OutputFolder = config.OUTFOLDER
-    # ThumbnailsFolder = config.THUMBNAILS
-
-    size = (256, 256)
-
     try:
-        imageResize01(InputFolder, OutputFolder)
-        #imageResize02(InputFolder, OutputFolder)
-        #imageResize02(TestInFile, TestOutFile)
-        #imageResize03(TestInFile, TestOutFile, size)
-        #imageResize04(InputFolder, OutputFolder)
-        print ('\n\n................... Exit .......................\n\n')
+        imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog)
+        print ('\n\n................... Run Finished .......................\n')
+        now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        logging(RunLog, 'R', '\n\n................... Run Finished ' + now + ' .......................\n\n\n.')
+        logging(ErrorLog, 'E', '\n\n................... Run Finished ' + now + ' .......................\n\n\n.')
+        cleanup(ErrorLog, RunLog)
         exit(0) # Exit Cleanly
     except KeyboardInterrupt:
-        print ('\n\n................... Exit .......................\n\n')
+        print ('\n\n................... Run Aborted ........................\n')
+        now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        logging(RunLog, 'R', '\n\n................... Run Aborted  ' + now + ' .......................\n\n\n.')
+        logging(ErrorLog, 'E', '\n\n................... Run Aborted  ' + now + ' .......................\n\n\n.')
+        cleanup(ErrorLog, RunLog)
         exit(0) # Exit Cleanly
         
 # End of __Main__ Startup Loop 
