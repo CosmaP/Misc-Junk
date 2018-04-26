@@ -8,11 +8,19 @@ import pymysql.cursors
 import re
 import config
 
+<<<<<<< HEAD
 conn = pymysql.connect(host=config.HOST, 
                        unix_socket=config.UNIX_SOCKET, 
                        user=config.USER, 
                        passwd=config.PASSWD, 
                        db=config.DB,
+=======
+conn = pymysql.connect(host='192.168.xx.xx', 
+                       unix_socket='/tmp/mysql.sock', 
+                       user='root', 
+                       passwd='xxxxxxxxxxxx', 
+                       db='tempdata',
+>>>>>>> c3c51ffb4a347630602af4350048a06914a13bf0
                        cursorclass=pymysql.cursors.DictCursor)
 
 conn.autocommit = config.AUT0COMMIT
