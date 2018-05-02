@@ -103,3 +103,4 @@ ENV/
 # Credentials
 config.py
 testcopy.cmd
+test.py

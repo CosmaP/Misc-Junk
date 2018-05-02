@@ -19,6 +19,7 @@ from PIL import Image
 #from resizeimage import resizeimage
 import config
 from time import gmtime, strftime
+import ftplib
 
 # Setup constants
 size = config.SIZE                  # Output Size
@@ -40,27 +41,26 @@ FTPPassword = config.FTPPASSWORD
 #======================================================================
 # Initialisation Procedures
 
-def setuprunlog(RunLog):
+def setuprunlog(runlog):
     today = strftime("%Y-%m-%d", gmtime())
     
-    runlog = 'Run-' + today + '.log'
+    runlog = today + '-Run.log'
         
     RunLog = open(runlog,"a+")
-    print ('\n\n................... RunLog Opened ........................\n\n')
+    print ('\n................... RunLog Opened ........................')
 
     return(RunLog)
 
 def setuperrorlog(ErrorLog):
     today = strftime("%Y-%m-%d", gmtime())
     
-    errorlog = 'Error-' + today + '.log'
+    errorlog = today + '-Error.log'
     
     ErrorLog = open(errorlog,"a+")
-    print ('\n\n................... ErrorLog Opened ........................\n\n')
+    print ('\n................... ErrorLog Opened ........................')
     
     return(ErrorLog)
-
-    
+   
 # End of Initialisation Procedures
 #======================================================================
 
@@ -76,7 +76,21 @@ def logging(LogFile, Type, Message):
         LogFile.write(now + Message)
     elif Type=='R':
         LogFile.write(now + Message)
+
+def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp):
+ 
     
+    ftp.set_debuglevel(2)
+    ftp.cwd('/test/')
+    os.chdir(outpath)
+
+    file = open(outname, 'rb')                  # file to send
+    cmd = 'STOR ' + outname
+    ftp.storbinary(cmd, file)     # send the file
+    logging(RunLog, 'R', ' Upload Output File  - ' + outname + '\n')
+    os.remove(outname)
+    logging(RunLog, 'R', ' Removed Output File - ' + outname + '\n')
+    os.chdir('..')
 
 # End of Service Procedures    
 #======================================================================
@@ -84,66 +98,94 @@ def logging(LogFile, Type, Message):
 #======================================================================
 # Task Procedures
 
-def imageResize(inpath, outpath, size, ErrorLog, RunLog):
-
-    #file_dir=os.path.split(inpath)
+def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
 
     Files = os.listdir(inpath) # returns list
+    count = 0
    
     #print(Files)
     for infile in Files:
-        print ('***********************************************************************************')
+        count = count + 1
+        print (str(count) + '\t ****************************************************************************')
         logging(RunLog, 'R', ' ***********************************************************************************\n')
         #print(infile)
         #print(outpath)
+        outname = infile
         outfile = os.path.splitext(outpath)[0] + '/' + infile
         infile = os.path.splitext(inpath)[0] + '/' + infile
         filetype = os.path.splitext(infile)[1]
+        
         print('File Type\t- ' + filetype)
+        print('Input File\t- ' + infile)
         print('Output File\t- ' + outfile)
-        logging(RunLog, 'R', ' File Type\t- ' + filetype + '\n')
-        logging(RunLog, 'R', ' Output File\t- ' + outfile + '\n')
 
-        if filetype == '.jpg' or filetype == '.JPG':
+        logging(RunLog, 'R', ' File Type\t\t\t- ' + filetype + '\n')
+        logging(RunLog, 'R', ' Input File\t\t\t- ' + infile + '\n')
+        logging(RunLog, 'R', ' Output File\t\t\t- ' + outfile + '\n')
+
+        if filetype == '.jpg' or filetype == '.JPG' or filetype == '.JEPG' or filetype == '.jpeg':
             if infile != outfile:
                 try:
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     im.save(outfile, "JPEG")
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp)
+                    print("Uploaded \t- %s" % outfile)
+                    logging(RunLog, 'R', " Uploaded \t\t\t- %s\n" % outfile)
+                    os.remove(infile)
+                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
                 except IOError:
-                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    print ("Cannot resize %s - %s probably already exists." % (infile, outfile))
+                    logging(RunLog, 'R', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
         elif filetype == '.gif' or filetype == '.GIF':
             if infile != outfile:
                 try:
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     im.save(outfile, "GIF")
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp)
+                    print("Uploaded  \t- %s" % outfile)
+                    logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
+                    os.remove(infile)
+                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
                 except IOError:
-                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    print ("Cannot resize %s - %s probably already exists." % (infile, outfile))
+                    logging(RunLog, 'R', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
         elif filetype == '.png' or filetype == '.PNG':
             if infile != outfile:
                 try:
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
-                    im.save(outfile, "PNG")
+                    rgb_im = im.convert('RGB')
+                    outfile = outfile + '.jpg'
+                    rgb_im.save(outfile)
+                    #im.save(outfile, "PNG")
+                    ftpfiletoserver(outname + '.JPG', outpath, ErrorLog, RunLog, ftp)
+                    print("Uploaded \t- %s" % outfile)
+                    logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
+                    os.remove(infile)
+                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
                 except IOError:
-                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    print (" Cannot resize %s - %s probably already exists." % (infile, outfile))
+                    logging(RunLog, 'R', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
         elif filetype == '.bmp' or filetype == '.BMP':
             if infile != outfile:
                 try:
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     im.save(outfile, "BMP")
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp)
+                    print("Uploaded \t- %s" % outfile)
+                    logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
+                    os.remove(infile)
+                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
                 except IOError:
-                    print ("Cannot create thumbnail for '%s' - It probably already exists." % infile)    
-                    logging(RunLog, 'R', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
-                    logging(ErrorLog, 'E', "Cannot create thumbnail for '%s' - It probably already exists." % infile)
+                    print ("Cannot resize %s - %s probably already exists." % (infile, outfile))
+                    logging(RunLog, 'R', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " Cannot resize %s - %s probably already exists.\n" % (infile, outfile))
         else:
             print('\n********************************** Not Processed **********************************\n')
             logging(RunLog, 'R', ' ********************************** Not Processed **********************************\n')
@@ -151,22 +193,25 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog):
             logging(ErrorLog, 'E', ' ' + infile + '\n')
 
         # EndIf
-    print(' ***********************************************************************************')
+    print('***********************************************************************************')
     logging(RunLog, 'R', ' ***********************************************************************************\n')
+
+
+
 # End of Task Procedures    
 #======================================================================
 
 #======================================================================
 # Shutdown Procedures
 
-def cleanup(RunLog, ErrorLog):
-    
+def cleanup(RunLog, ErrorLog, FTP):
+
+    FTP.quit()
+    print ('\n................... FTP Closed ........................')
     RunLog.close()
-    print ('\n................... RunLog Closed ........................\n')
+    print ('\n................... RunLog Closed ........................')
     ErrorLog.close()
-    print ('................... ErrorLog Closed ........................\n\n')
-    
-    
+    print ('\n................... ErrorLog Closed ........................\n\n')
     
     
 # End of Shutdown Procedures
@@ -240,38 +285,45 @@ if __name__ == '__main__': # The Program will start from here
     
         
     print ('\n\nSetting Up ...\n')
-    #RunLog = setuprunlog(RunLog)
-    #ErrorLog = setuperrorlog(ErrorLog)
 
     today = strftime("%Y-%m-%d", gmtime())
     now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-    runlog = 'Run-' + today + '.log'
-    RunLog = open(runlog,"a+")
-    print ('\n\n................... RunLog Opened ........................\n\n')
-
-    errorlog = 'Error-' + today + '.log'
-    ErrorLog = open(errorlog,"a+")
-    print ('\n\n................... ErrorLog Opened ........................\n\n')
+    #runlog = 'Run-' + today + '.log'
+    #RunLog = open(runlog,"a+")
+    print ('\n\n................... Open RunLog ........................')
+    RunLog = setuprunlog('Temp Name')
+    
+    #errorlog = 'Error-' + today + '.log'
+    #ErrorLog = open(errorlog,"a+")
+    print ('\n................... Open ErrorLog ........................')
+    ErrorLog = setuperrorlog('Temp Name')
+    
+    print ('\n................... Setup FTP Connection ........................\n\n')
+    logging(RunLog, 'R', ' Setup FTP Connection\n')
+    ftp = ftplib.FTP(FTPServer, FTPUserName, FTPPassword)
+    #ftp.login()
     
     logging(RunLog, 'R', (' *** Start Run ***\n\n'))
     logging(ErrorLog, 'E', (' *** Start Run ***\n\n'))
     print ('\nGo ...\n\n')
 
     try:
-        imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog)
-        print ('\n\n................... Run Finished .......................\n')
+        imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog, ftp)
+        print ('\n\n................... Run Finished .......................')
         now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        logging(RunLog, 'R', '\n\n................... Run Finished ' + now + ' .......................\n\n\n.')
-        logging(ErrorLog, 'E', '\n\n................... Run Finished ' + now + ' .......................\n\n\n.')
-        cleanup(ErrorLog, RunLog)
+        logging(RunLog, 'R', '\n\n................... Run Finished ' + now + ' .......................\n.\n')
+        logging(ErrorLog, 'E', '\n\n................... Run Finished ' + now + ' .......................\n.\n')
+        print('................... Shutting Down ........................\n')
+        cleanup(ErrorLog, RunLog, ftp)
         exit(0) # Exit Cleanly
     except KeyboardInterrupt:
         print ('\n\n................... Run Aborted ........................\n')
         now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        logging(RunLog, 'R', '\n\n................... Run Aborted  ' + now + ' .......................\n\n\n.')
-        logging(ErrorLog, 'E', '\n\n................... Run Aborted  ' + now + ' .......................\n\n\n.')
-        cleanup(ErrorLog, RunLog)
+        logging(RunLog, 'R', '\n\n................... Run Aborted  ' + now + ' .......................\n.\n')
+        logging(ErrorLog, 'E', '\n\n................... Run Aborted  ' + now + ' .......................\n.\n')
+        print('................... Shutting Down ........................\n')
+        cleanup(ErrorLog, RunLog, ftp)
         exit(0) # Exit Cleanly
         
 # End of __Main__ Startup Loop 
