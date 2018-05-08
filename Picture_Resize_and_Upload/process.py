@@ -12,7 +12,7 @@
 # Start of Main Imports and setup constants
 
 # Module Imports
-import os, sys
+import os, sys, time
 from pathlib import Path
 import argparse                   # Import Argument Parser
 from PIL import Image
@@ -27,6 +27,8 @@ size = config.SIZE                  # Output Size
 InputFolder = config.INFOLDER
 OutputFolder = config.OUTFOLDER
 ThumbnailsFolder = config.THUMBNAILS
+RejectsFolder = config.REJECTSFOLDER
+LogFolder = config.LOGFOLDER
 
 # Web Storage Credentials
 FTPServer = config.FTPSERVER
@@ -40,20 +42,30 @@ FTPPassword = config.FTPPASSWORD
 #======================================================================
 # Initialisation Procedures
 
+def cleanuplogs(logfolder):
+
+    now = time.time()
+
+    for f in os.listdir(logfolder):
+        f = logfolder + '/' + f
+        if os.stat(f).st_mtime < now -2 * 86400:
+            if os.path.isfile(f):
+                os.remove(f)
+
 def setuprunlog(runlog):
     today = strftime("%Y-%m-%d", gmtime())
     
-    runlog = today + '-Run.log'
+    runlog = runlog + '/' + today + '-Run.log'
         
     RunLog = open(runlog,"a+")
     print ('\n................... RunLog Opened ......................')
 
     return(RunLog)
 
-def setuperrorlog(ErrorLog):
+def setuperrorlog(errorlog):
     today = strftime("%Y-%m-%d", gmtime())
     
-    errorlog = today + '-Error.log'
+    errorlog = errorlog + '/' + today + '-Error.log'
     
     ErrorLog = open(errorlog,"a+")
     print ('\n................... ErrorLog Opened ....................')
@@ -90,6 +102,14 @@ def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp):
     logging(RunLog, 'R', ' Removed Output File - ' + outname + '\n')
     os.chdir('..')
 
+def RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog):
+
+    outfile = RejectsFolder + "/" + outname
+    print('Rejected File \t- ' + outfile)
+    logging(RunLog, 'R', ' Move Rejected File  - ' + infile + '\n')
+    os.rename(infile, outfile)
+    logging(RunLog, 'R', ' Moved Rejected File - ' + outfile + '\n')
+    
 # End of Service Procedures    
 #======================================================================
 
@@ -186,10 +206,13 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
                     logging(RunLog, 'R', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
                     logging(ErrorLog, 'E', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
         else:
+            RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog)
             print('\n********************************** Not Processed **********************************\n')
+            logging(RunLog, 'R', ' File Rejected \t\t- ' + infile + '\n')
             logging(RunLog, 'R', ' ********************************** Not Processed **********************************\n')
+            logging(ErrorLog, 'E', ' ' + infile + ' moved to Reject folder\n')
             logging(ErrorLog, 'E', ' ********************************** Not Processed **********************************\n')
-            logging(ErrorLog, 'E', ' ' + infile + '\n')
+            
 
         # EndIf
     print('\t ***********************************************')
@@ -287,11 +310,14 @@ if __name__ == '__main__': # The Program will start from here
     today = strftime("%Y-%m-%d", gmtime())
     now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
+    print ('\n................... Clean-up Logs .......................')
+    cleanuplogs(LogFolder)
+
     print ('\n................... Open RunLog ........................')
-    RunLog = setuprunlog('Temp Name')
+    RunLog = setuprunlog(LogFolder)
     
     print ('\n................... Open ErrorLog ......................')
-    ErrorLog = setuperrorlog('Temp Name')
+    ErrorLog = setuperrorlog(LogFolder)
     
     print ('\n................... Setup FTP Connection ...............')
     logging(RunLog, 'R', ' ....................... Setup FTP Connection ......................................\n')
@@ -310,16 +336,16 @@ if __name__ == '__main__': # The Program will start from here
         imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog, ftp)
         print ('\n\n................... Run Finished .......................')
         now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        logging(RunLog, 'R', ' ....................... Run Finished ' + now + ' ..........................\n')
-        logging(ErrorLog, 'E', ' ........................... Run Finished ' + now + ' .............................\n')
+        logging(RunLog, 'R', ' ....................... Run Finished ' + now + ' ..........................\n\n')
+        logging(ErrorLog, 'E', ' ........................... Run Finished ' + now + ' .............................\n\n')
         print('\n................... Shutting Down ......................')
         cleanup(ErrorLog, RunLog, ftp)
         exit(0) # Exit Cleanly
     except KeyboardInterrupt:
         print ('\n\n................... Run Aborted ........................')
         now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        logging(RunLog, 'R', ' ....................... Run Aborted  ' + now + ' ..........................\n')
-        logging(ErrorLog, 'E', ' ........................ Run Aborted  ' + now + ' .........................\n')
+        logging(RunLog, 'R', ' ....................... Run Aborted  ' + now + ' ..........................\n\n')
+        logging(ErrorLog, 'E', ' ........................ Run Aborted  ' + now + ' .........................\n\n')
         print('\n................... Shutting Down ......................\n')
         cleanup(ErrorLog, RunLog, ftp)
         exit(0) # Exit Cleanly
