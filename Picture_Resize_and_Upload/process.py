@@ -33,6 +33,7 @@ LogFolder = config.LOGFOLDER
 # Web Storage Credentials
 FTPServer = config.FTPSERVER
 FTPPort = config.FTPPORT
+FTPFolder = config.FTPFOLDER
 FTPUserName = config.FTPUSERNAME
 FTPPassword = config.FTPPASSWORD
 
@@ -88,10 +89,10 @@ def logging(LogFile, Type, Message):
     elif Type=='R':
         LogFile.write(now + Message)
 
-def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp):
+def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder):
     
     #ftp.set_debuglevel(2)
-    ftp.cwd('/test/')
+    ftp.cwd(FTPFolder)
     os.chdir(outpath)
 
     file = open(outname, 'rb')                  # file to send
@@ -116,7 +117,7 @@ def RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog):
 #======================================================================
 # Task Procedures
 
-def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
+def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
 
     Files = os.listdir(inpath) # returns list
     count = 0
@@ -145,7 +146,7 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     im.save(outfile, "JPEG")
-                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp)
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded \t- %s" % outfile)
                     logging(RunLog, 'R', " Uploaded \t\t\t- %s\n" % outfile)
                     os.remove(infile)
@@ -162,7 +163,7 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
                     rgb_im = im.convert('RGB')
                     outfile = outfile + '.jpg'
                     rgb_im.save(outfile)
-                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp)
+                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded  \t- %s" % outfile)
                     logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
                     os.remove(infile)
@@ -179,7 +180,7 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
                     rgb_im = im.convert('RGB')
                     outfile = outfile + '.jpg'
                     rgb_im.save(outfile)
-                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp)
+                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded \t- %s" % outfile)
                     logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
                     os.remove(infile)
@@ -196,7 +197,7 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp):
                     rgb_im = im.convert('RGB')
                     outfile = outfile + '.jpg'
                     rgb_im.save(outfile)
-                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp)
+                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded \t- %s" % outfile)
                     logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
                     os.remove(infile)
@@ -310,7 +311,7 @@ if __name__ == '__main__': # The Program will start from here
     today = strftime("%Y-%m-%d", gmtime())
     now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-    print ('\n................... Clean-up Logs .......................')
+    print ('\n................... Clean-up Logs ......................')
     cleanuplogs(LogFolder)
 
     print ('\n................... Open RunLog ........................')
@@ -333,7 +334,7 @@ if __name__ == '__main__': # The Program will start from here
     logging(ErrorLog, 'E', ' ........................... Run Started ' + now + '  .............................\n')
    
     try:
-        imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog, ftp)
+        imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog, ftp, FTPFolder)
         print ('\n\n................... Run Finished .......................')
         now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         logging(RunLog, 'R', ' ....................... Run Finished ' + now + ' ..........................\n\n')

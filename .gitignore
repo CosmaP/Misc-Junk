@@ -104,3 +104,10 @@ ENV/
 config.py
 testcopy.cmd
 test.py
+test.html
+Orr/
+Logs/
+PicturesIn/
+PicturesOut/
+Rejects/
+.vscode/
