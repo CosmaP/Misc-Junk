@@ -111,3 +111,8 @@ PicturesIn/
 PicturesOut/
 Rejects/
 .vscode/
+CertRenewalLogs/
+uploadimagesweb.sh
+uploadimageslocal.sh
+uploadimagesviavpn.sh
+

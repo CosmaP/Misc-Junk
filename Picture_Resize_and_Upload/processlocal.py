@@ -6,8 +6,6 @@
 #  
 #  V 0.1
 #
-#  Upload to FTP
-#
 #=====================================================================
 
 #======================================================================
@@ -15,6 +13,7 @@
 
 # Module Imports
 import os, sys, time
+import subprocess
 from pathlib import Path
 import argparse                   # Import Argument Parser
 from PIL import Image
@@ -94,15 +93,29 @@ def logging(LogFile, Type, Message):
 def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder):
     
     #ftp.set_debuglevel(2)
-    ftp.cwd(FTPFolder)
+    #ftp.cwd(FTPFolder)
     os.chdir(outpath)
 
-    file = open(outname, 'rb')                  # file to send
-    cmd = 'STOR ' + outname
-    ftp.storbinary(cmd, file)     # send the file
     logging(RunLog, 'R', ' Upload Output File  - ' + outname + '\n')
-    os.remove(outname)
-    logging(RunLog, 'R', ' Removed Output File - ' + outname + '\n')
+
+    #file = open(outname, 'rb')                  # file to send
+    #cmd = 'STOR ' + outname
+    #ftp.storbinary(cmd, file)     # send the file
+
+    cmd = 'sudo cp "' + outname + '" "' + ftp + FTPFolder + '/' + outname + '"'
+
+    # print (cmd)
+
+    status = subprocess.call(cmd, shell=True) 
+    # print (status)
+
+    if status == 0:
+        os.remove(outname)
+        logging(RunLog, 'R', ' Removed Output File - ' + outname + '\n')
+    else:
+        logging(RunLog, 'E', ' File Error, No Copy - ' + outname + '\n')
+        logging(RunLog, 'R', ' File Error, No Copy - ' + outname + '\n')
+
     os.chdir('..')
 
 def RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog):
@@ -231,7 +244,7 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
 
 def cleanup(RunLog, ErrorLog, FTP):
 
-    FTP.quit()
+    #FTP.quit()
     print ('\n................... FTP Closed .........................')
     RunLog.close()
     print ('\n................... RunLog Closed ......................')
@@ -325,7 +338,8 @@ if __name__ == '__main__': # The Program will start from here
     print ('\n................... Setup FTP Connection ...............')
     logging(RunLog, 'R', ' ....................... Setup FTP Connection ......................................\n')
                            
-    ftp = ftplib.FTP(FTPServer, FTPUserName, FTPPassword)
+    #ftp = ftplib.FTP(FTPServer, FTPUserName, FTPPassword)
+    ftp = '/var/www/html/'
     print ('\n................... FTP Connection Setup ...............')
     #ftp.login()
 
