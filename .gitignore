@@ -103,6 +103,7 @@ ENV/
 # Credentials
 config.py
 testcopy.cmd
+testreset.sh
 test.py
 test.html
 Orr/
