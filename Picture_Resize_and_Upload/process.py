@@ -51,7 +51,7 @@ def cleanuplogs(logfolder):
 
     for f in os.listdir(logfolder):
         f = logfolder + '/' + f
-        if os.stat(f).st_mtime < now -2 * 86400:
+        if os.stat(f).st_mtime < now -7 * 86400:
             if os.path.isfile(f):
                 os.remove(f)
 
@@ -94,13 +94,14 @@ def logging(LogFile, Type, Message):
 def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder):
     
     #ftp.set_debuglevel(2)
-    ftp.cwd(FTPFolder)
+    #ftp.cwd(FTPFolder)  # Not Needed here, moved to after connection setup
     os.chdir(outpath)
 
     file = open(outname, 'rb')                  # file to send
     cmd = 'STOR ' + outname
     ftp.storbinary(cmd, file)     # send the file
     logging(RunLog, 'R', ' Upload Output File  - ' + outname + '\n')
+    logging(RunLog, 'R', ' FTPPath to Output   - ' + FTPFolder + '\n')
     os.remove(outname)
     logging(RunLog, 'R', ' Removed Output File - ' + outname + '\n')
     os.chdir('..')
@@ -123,6 +124,7 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
 
     Files = os.listdir(inpath) # returns list
     count = 0
+    gooduploads = 0
    
     #print(Files)
     for infile in Files:
@@ -153,10 +155,11 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     logging(RunLog, 'R', " Uploaded \t\t\t- %s\n" % outfile)
                     os.remove(infile)
                     logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    gooduploads = gooduploads + 1
                 except IOError:
-                    print ("Cannot process %s - %s. Please Review." % (infile, outfile))
-                    logging(RunLog, 'R', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
-                    logging(ErrorLog, 'E', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
+                    print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
+                    logging(RunLog, 'R', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
         elif filetype == '.gif' or filetype == '.GIF':
             if infile != outfile:
                 try:
@@ -170,10 +173,11 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
                     os.remove(infile)
                     logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    gooduploads = gooduploads + 1
                 except IOError:
-                    print ("Cannot process %s - %s. Please Review." % (infile, outfile))
-                    logging(RunLog, 'R', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
-                    logging(ErrorLog, 'E', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
+                    print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
+                    logging(RunLog, 'R', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
         elif filetype == '.png' or filetype == '.PNG':
             if infile != outfile:
                 try:
@@ -187,10 +191,11 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
                     os.remove(infile)
                     logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    gooduploads = gooduploads + 1
                 except IOError:
-                    print ("Cannot process %s - %s. Please Review." % (infile, outfile))
-                    logging(RunLog, 'R', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
-                    logging(ErrorLog, 'E', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
+                    print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
+                    logging(RunLog, 'R', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
         elif filetype == '.bmp' or filetype == '.BMP':
             if infile != outfile:
                 try:
@@ -204,22 +209,23 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
                     os.remove(infile)
                     logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    gooduploads = gooduploads + 1
                 except IOError:
-                    print ("Cannot process %s - %s. Please Review." % (infile, outfile))
-                    logging(RunLog, 'R', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
-                    logging(ErrorLog, 'E', " Cannot process %s - %s. Please Review.\n" % (infile, outfile))
+                    print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
+                    logging(RunLog, 'R', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
+                    logging(ErrorLog, 'E', " ** Error ** Cannot process %s - %s Please Review.\n" % (infile, outfile))
         else:
             RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog)
             print('\n********************************** Not Processed **********************************\n')
-            logging(RunLog, 'R', ' File Rejected \t\t- ' + infile + '\n')
+            logging(RunLog, 'R', ' ** Error ** File Rejected \t\t- ' + infile + '\n')
             logging(RunLog, 'R', ' ********************************** Not Processed **********************************\n')
-            logging(ErrorLog, 'E', ' ' + infile + ' moved to Reject folder\n')
+            logging(ErrorLog, 'E', ' ** Error ** ' + infile + ' moved to Reject folder\n')
             logging(ErrorLog, 'E', ' ********************************** Not Processed **********************************\n')
             
 
         # EndIf
-    print('\t ***********************************************')
-    logging(RunLog, 'R', ' ***********************************************************************************\n')
+    print('\t ' + str(gooduploads) + ' Pictures Uploaded ******************************')
+    logging(RunLog, 'R', ' ' + str(gooduploads) + ' Pictures Uploaded *****************************************************************\n')
 
 
 
@@ -326,9 +332,10 @@ if __name__ == '__main__': # The Program will start from here
     logging(RunLog, 'R', ' ....................... Setup FTP Connection ......................................\n')
                            
     ftp = ftplib.FTP(FTPServer, FTPUserName, FTPPassword)
-    print ('\n................... FTP Connection Setup ...............')
     #ftp.login()
-
+    ftp.cwd(FTPFolder)
+    print ('\n................... FTP Connection Setup ...............')
+    
     print ('\n................... Start Run ..........................\n\n')
     now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
