@@ -100,10 +100,10 @@ def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder):
     file = open(outname, 'rb')                  # file to send
     cmd = 'STOR ' + outname
     ftp.storbinary(cmd, file)     # send the file
-    logging(RunLog, 'R', ' Upload Output File  - ' + outname + '\n')
-    logging(RunLog, 'R', ' FTPPath to Output   - ' + FTPFolder + '\n')
+    logging(RunLog, 'R', ' Upload Output File   - ' + outname + '\n')
+    logging(RunLog, 'R', ' FTPPath to Output    - ' + FTPFolder + '\n')
     os.remove(outname)
-    logging(RunLog, 'R', ' Removed Output File - ' + outname + '\n')
+    logging(RunLog, 'R', ' Removed Output File  - ' + outname + '\n')
     os.chdir('..')
 
 def RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog):
@@ -131,8 +131,9 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
         count = count + 1
         print (str(count) + '\t ***********************************************')
         logging(RunLog, 'R', ' ' + str(count) + '\t ******************************************************************************\n')
-        outname = infile
-        outfile = os.path.splitext(outpath)[0] + '/' + infile
+        #outname = infile
+        outname = os.path.splitext(infile)[0] + '.jpg'
+        outfile = os.path.splitext(outpath)[0] + '/' + outname
         infile = os.path.splitext(inpath)[0] + '/' + infile
         filetype = os.path.splitext(infile)[1]
         
@@ -140,21 +141,23 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
         print('Input File\t- ' + infile)
         print('Output File\t- ' + outfile)
 
-        logging(RunLog, 'R', ' File Type\t\t\t- ' + filetype + '\n')
-        logging(RunLog, 'R', ' Input File\t\t\t- ' + infile + '\n')
-        logging(RunLog, 'R', ' Output File\t\t\t- ' + outfile + '\n')
+        logging(RunLog, 'R', ' File Type\t\t - ' + filetype + '\n')
+        logging(RunLog, 'R', ' Input File\t\t - ' + infile + '\n')
+        logging(RunLog, 'R', ' Output File\t\t - ' + outfile + '\n')
 
-        if filetype == '.jpg' or filetype == '.JPG' or filetype == '.JEPG' or filetype == '.jpeg':
+        if filetype == '.jpg' or filetype == '.JPG' or filetype == '.JPEG' or filetype == '.jpeg':
             if infile != outfile:
                 try:
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
-                    im.save(outfile, "JPEG")
+                    rgb_im = im.convert('RGB')
+                    rgb_im.save(outfile)
                     ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded \t- %s" % outfile)
-                    logging(RunLog, 'R', " Uploaded \t\t\t- %s\n" % outfile)
+                    logging(RunLog, 'R', " Uploaded Output File - %s\n" % outfile)
                     os.remove(infile)
-                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    print("Removed  \t- %s" % outfile)
+                    logging(RunLog, 'R', ' Removed Input File\t - ' + infile + '\n')
                     gooduploads = gooduploads + 1
                 except IOError:
                     print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
@@ -166,13 +169,13 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     rgb_im = im.convert('RGB')
-                    outfile = outfile + '.jpg'
                     rgb_im.save(outfile)
-                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp, FTPFolder)
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded  \t- %s" % outfile)
-                    logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
+                    logging(RunLog, 'R', " Uploaded Output File - %s\n" % outfile)
                     os.remove(infile)
-                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    print("Removed  \t- %s" % outfile)                    
+                    logging(RunLog, 'R', ' Removed Input File\t - ' + infile + '\n')
                     gooduploads = gooduploads + 1
                 except IOError:
                     print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
@@ -184,13 +187,13 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     rgb_im = im.convert('RGB')
-                    outfile = outfile + '.jpg'
                     rgb_im.save(outfile)
-                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp, FTPFolder)
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded \t- %s" % outfile)
-                    logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
+                    logging(RunLog, 'R', " Uploaded Output File - %s\n" % outfile)
                     os.remove(infile)
-                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    print("Removed  \t- %s" % outfile)
+                    logging(RunLog, 'R', ' Removed Input File\t - ' + infile + '\n')
                     gooduploads = gooduploads + 1
                 except IOError:
                     print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
@@ -202,13 +205,13 @@ def imageResize(inpath, outpath, size, ErrorLog, RunLog, ftp, FTPFolder):
                     im = Image.open(infile)
                     im.thumbnail(size, Image.ANTIALIAS)
                     rgb_im = im.convert('RGB')
-                    outfile = outfile + '.jpg'
+                    outfile = outfile
                     rgb_im.save(outfile)
-                    ftpfiletoserver(outname + '.jpg', outpath, ErrorLog, RunLog, ftp, FTPFolder)
+                    ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder)
                     print("Uploaded \t- %s" % outfile)
-                    logging(RunLog, 'R', " Uploaded  \t\t\t- %s\n" % outfile)
+                    logging(RunLog, 'R', " Uploaded Output File - %s\n" % outfile)
                     os.remove(infile)
-                    logging(RunLog, 'R', ' Removed Input File\t- ' + infile + '\n')
+                    logging(RunLog, 'R', ' Removed Input File\t - ' + infile + '\n')
                     gooduploads = gooduploads + 1
                 except IOError:
                     print ("** Error ** Cannot process %s - %s Please Review." % (infile, outfile))
