@@ -334,6 +334,7 @@ if __name__ == '__main__': # The Program will start from here
     ftp = ftplib.FTP(FTPServer, FTPUserName, FTPPassword)
     #ftp.login()
     ftp.cwd(FTPFolder)
+    ftp.encoding='utf-8' #force encoding for file name in utf-8 rather than default that is iso-8889-1
     print ('\n................... FTP Connection Setup ...............')
     
     print ('\n................... Start Run ..........................\n\n')
