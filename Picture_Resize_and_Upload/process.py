@@ -113,6 +113,18 @@ def RejectFile(infile, outname, RejectsFolder, ErrorLog, RunLog):
     logging(RunLog, 'R', ' Move Rejected File  - ' + infile + '\n')
     os.rename(infile, outfile)
     logging(RunLog, 'R', ' Moved Rejected File - ' + outfile + '\n')
+
+def RemoveAppleFiles(inpath, RunLog, ErrorLog):
+
+    try:
+        logging(RunLog, 'R', ' ....................... Delete Apple Files  ' + now + ' ...........................\n')
+        logging(ErrorLog, 'E', ' ....................... Delete Apple Files ' + now + '  ...........................\n')
+        os.system('rm -rf ' + inpath + '/._*')
+        logging(RunLog, 'R', ' ....................... Deleted Apple Files  ' + now + ' ...........................\n')
+        logging(ErrorLog, 'E', ' ....................... Deleted Apple Files ' + now + '  ...........................\n')
+    except OSError as e:  ## if failed, report it back to the logs ##
+        logging(RunLog, 'R', ' ....................... Error: %s - %s. ' + now + ' ...........................\n' % (e.filename, e.strerror))
+        logging(ErrorLog, 'E', ' ....................... Error: %s - %s. ' + now + '  ...........................\n' % (e.filename, e.strerror))
     
 # End of Service Procedures    
 #======================================================================
@@ -346,6 +358,9 @@ if __name__ == '__main__': # The Program will start from here
     logging(RunLog, 'R', ' ....................... Run Started ' + now + ' ...........................\n')
     logging(ErrorLog, 'E', ' ....................... Run Started ' + now + '  ...........................\n')
    
+    # Remove Hidden Apple Files
+    RemoveAppleFiles(InputFolder, RunLog, ErrorLog)
+
     try:
         imageResize(InputFolder, OutputFolder, size, ErrorLog, RunLog, ftp, FTPFolder)
         print ('\n\n................... Run Finished .......................')
