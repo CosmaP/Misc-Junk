@@ -99,11 +99,11 @@ def ftpfiletoserver(outname, outpath, ErrorLog, RunLog, ftp, FTPFolder):
     os.chdir(outpath)
 
     logging(RunLog, 'R', ' Upload Output File  - ' + outname + '\n')
-
+    
     cmd = 'sudo cp "' + outname + '" "' + ftp + FTPFolder + '/' + outname + '"'
-
-    # print (cmd)
-
+    
+    #print (cmd)
+    
     status = subprocess.call(cmd, shell=True) 
     # print (status)
 
@@ -130,7 +130,6 @@ def RemoveAppleFiles(inpath, RunLog, ErrorLog):
         logging(RunLog, 'R', ' ....................... Delete Apple Files  ' + now + ' ...........................\n')
         logging(ErrorLog, 'E', ' ....................... Delete Apple Files ' + now + '  ...........................\n')
         os.system('rm -rf ' + inpath + '/._*')
-        os.system('rm -rf ' + inpath + '/.DS*')
         logging(RunLog, 'R', ' ....................... Deleted Apple Files  ' + now + ' ...........................\n')
         logging(ErrorLog, 'E', ' ....................... Deleted Apple Files ' + now + '  ...........................\n')
     except OSError as e:  ## if failed, report it back to the logs ##
@@ -354,8 +353,12 @@ if __name__ == '__main__': # The Program will start from here
     
     print ('\n................... Setup FTP Connection ...............')
     logging(RunLog, 'R', ' ....................... Setup FTP Connection ......................................\n')
-                           
-    ftp = '/var/www/html/'
+    
+    if FTPServer == 'localtest':
+        ftp = '../'
+    else:
+        ftp = '/var/www/html/'
+        
     print ('\n................... FTP Connection Setup ...............')
     
     print ('\n................... Start Run ..........................\n\n')

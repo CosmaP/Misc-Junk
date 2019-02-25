@@ -120,7 +120,6 @@ def RemoveAppleFiles(inpath, RunLog, ErrorLog):
         logging(RunLog, 'R', ' ....................... Delete Apple Files  ' + now + ' ...........................\n')
         logging(ErrorLog, 'E', ' ....................... Delete Apple Files ' + now + '  ...........................\n')
         os.system('rm -rf ' + inpath + '/._*')
-        os.system('rm -rf ' + inpath + '/.DS*')
         logging(RunLog, 'R', ' ....................... Deleted Apple Files  ' + now + ' ...........................\n')
         logging(ErrorLog, 'E', ' ....................... Deleted Apple Files ' + now + '  ...........................\n')
     except OSError as e:  ## if failed, report it back to the logs ##
