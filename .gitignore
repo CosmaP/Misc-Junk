@@ -118,4 +118,13 @@ uploadimageslocal.sh
 uploadimagesviavpn.sh
 CertRenewalLogs/
 
-
+# Test Files
+Demo_Conways_Game_of_Life.py
+Demo_Crossword_Puzzle.py
+HelloWorld.py
+psg_Graph.py
+psg_hello.py
+psg_matplotlib.py
+psg_opencv.py
+psg_test01.py
+psg_test01.py
