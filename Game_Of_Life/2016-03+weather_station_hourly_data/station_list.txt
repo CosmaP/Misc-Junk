@@ -1,0 +1,25 @@
+# Station list with cities for data loading.
+stations = [
+    ("IAMSTERD55", "Amsterdam"),
+    ("IBCNORTH17", "Vancouver"),
+    ("IBELFAST4", "Belfast"),
+    ("IBERLINB54", "Berlin"),
+    ("ICOGALWA4", "Galway"),
+    ("ICOMUNID56", "Madrid"),
+    ("IDUBLIND35", "Dublin"),
+    ("ILAZIORO71", "Rome"),
+    ("ILEDEFRA6", "Paris"),
+    ("ILONDONL28", "London"),
+    ("IMUNSTER11", "Cork"),
+    ("INEWSOUT455", "Sydney"),
+    ("ISOPAULO61", "Sao Paulo"),
+    ("IWESTERN99", "Cape Town"),
+    ("KCASANFR148", "San Francisco"),
+    ("KNYBROOK40", "New York"),
+    #("IRUTHERG2", "Glasgow"),
+    ("IRENFREW4", "Glasgow"),
+    ("IENGLAND64", "Liverpool"),
+    ('IEDINBUR6', 'Edinburgh')
+]
+
+# Shane Lynn 2016 - www.shanelynn.ie
