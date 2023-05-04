@@ -102,6 +102,8 @@ ENV/
 
 # Credentials
 config.py
+creds.py
+siteinfo.py
 testcopy.cmd
 testreset.sh
 test.py
@@ -128,3 +130,5 @@ psg_matplotlib.py
 psg_opencv.py
 psg_test01.py
 psg_test01.py
+DataSummary.xlsx
+DocProperties.csv
