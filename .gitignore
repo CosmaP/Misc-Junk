@@ -102,8 +102,6 @@ ENV/
 
 # Credentials
 config.py
-creds.py
-siteinfo.py
 testcopy.cmd
 testreset.sh
 test.py
@@ -130,5 +128,8 @@ psg_matplotlib.py
 psg_opencv.py
 psg_test01.py
 psg_test01.py
+<<<<<<< HEAD
+=======
 DataSummary.xlsx
 DocProperties.csv
+>>>>>>> parent of 0c44416 (Sorting out GitNore)

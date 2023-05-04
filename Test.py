@@ -1,27 +1,12 @@
-#!/usr/bin/env python#
+#!/usr/bin/env python
+
 
 #======================================================================
-# Set-up 
-
-import pandas as pd
-
-def setup():                 # Shutdown GPIO and Cleanup modules
-
-    print ('\n\nSetting Up ...\n')
-
-    GPIO.cleanup()             # Release GPIO resource
-    
-# End of set-up Procedures  
-#======================================================================
-
-#======================================================================
-# Clean-up 
+# Clean-up Procedures  
     
 def destroy():                 # Shutdown GPIO and Cleanup modules
 
-    print ('\n\nCleaning Up ...\n')
-
-    #GPIO.cleanup()             # Release GPIO resource
+    GPIO.cleanup()             # Release GPIO resource
     
 # End of Clean-up Procedures  
 #======================================================================
@@ -31,8 +16,6 @@ def destroy():                 # Shutdown GPIO and Cleanup modules
     
 def maincontrol():                  # Main Control Loop
 
-    print ('\n\nMain Loop ...\n')
-
 # Main functionality goes here
 
 # End of Main Control Procedure        
@@ -41,11 +24,13 @@ def maincontrol():                  # Main Control Loop
 #======================================================================            
 # __Main__ Startup Loop        
        
-if __name__ == '__main__': # If this is loaded as he main Program will start from here
+if __name__ == '__main__': # The Program will start from here
         
     # Get and parse Arguments
     
-    setup()           # Setup
+    print ('\n\nSetting Up ...\n')
+
+    setup()           # Setup all Lights
 
     print ('\nGo ...\n\n')
 	
@@ -61,6 +46,4 @@ if __name__ == '__main__': # If this is loaded as he main Program will start fro
         
 # End of __Main__ Startup Loop 
 #======================================================================
-
-
 
