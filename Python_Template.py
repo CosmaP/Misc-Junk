@@ -3,7 +3,27 @@
 #======================================================================
 # Set-up 
 
-import pandas as pd
+# config.py holds credentials that should not be shared and other setup values
+import config
+from datetime import datetime
+import logging
+
+
+###################### Set up Logging
+logfile = config.LOGFILE
+
+# get Date and time
+dt_object = datetime.now()
+# Create time format for Logging
+modified = dt_object.strftime('_%Y-%m-%d_%H_%M')
+logfile = logfile + modified + ".txt"
+
+# configure logging
+FORMAT = '%(asctime)-20s %(levelname)-8s %(message)s'
+logging.basicConfig(filename=logfile, level=logging.INFO, format=FORMAT, datefmt='%Y-%m-%d %H:%M:%S')
+
+###################### End of Logging Setup
+
 
 def setup():                 # Shutdown GPIO and Cleanup modules
 
