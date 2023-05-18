@@ -120,6 +120,7 @@ CertRenewalLogs/
 
 # Test Files
 All_Users.csv
+All_Users_Test.csv
 CodeTwo_Licences.csv
 CodeTwo_Used_Licenses_full.csv
 CodeTwo_Used_Licenses_test.csv
