@@ -9,8 +9,8 @@
 #           The Input file is comes from an export from Snipe-IT and must be in this format
 #
 # Name,Title,Email,Phone,username,Department,Location,Manager,Assets,License,Consumables,Accessories,Notes,Groups,Login Enabled
-# Sam Gillespie,,,,Sam.Gillespie,,,,0,0,0,0,,,
-# Kevin Smith,,,,Kevin.Smith,,,,1,10,0,0,,Admin 
+# Fred Bloggs,,,,Fred.Bloggs,,,,0,0,0,0,,,
+# Bert Brown,,,,Bert.Brown,,,,1,10,0,0,,Admin 
 
 ###########################################################################################
 

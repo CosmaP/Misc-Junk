@@ -8,8 +8,8 @@
 #           This creates users from an export from CodeTwo.  It must be in this format
 #
 #           number,Email
-#           1,Aaron.Moore@pinnacle-oa.com
-#           2,Aaron.Newton@pinnacle-oa.com
+#           1,Bert.Brown@test.com
+#           2,Fred.Bloggs@test.com
 #
 #           The number is a sequence number and does not matter.  But it has to be there.
 #
