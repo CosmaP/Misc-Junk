@@ -119,6 +119,12 @@ uploadimagesviavpn.sh
 CertRenewalLogs/
 
 # Test Files
+All_Users.csv
+CodeTwo_Licences.csv
+CodeTwo_Used_Licenses.csv
+test.txt
+Usernames_and_IDs.csv
+Groups.csv
 Demo_Conways_Game_of_Life.py
 Demo_Crossword_Puzzle.py
 HelloWorld.py

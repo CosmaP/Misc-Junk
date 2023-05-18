@@ -1,5 +1,20 @@
 #!/usr/bin/env python
 
+###########################################################################################
+#
+# Note:     This Creates Snipe IT groups
+#           The Input file is manually created and must be in this format
+#
+#           name,default_checkout_length,max_checkout_length
+#           Support,14,28
+#           Consultancy,14,28
+#           3E,14,28
+#           Aderant,14,28
+#           Intapp,14,28
+#
+#
+###########################################################################################
+
 import config
 import requests
 import csv
@@ -44,7 +59,7 @@ def createdata(input_file):
         # Read file in as an ordered dictionary
         groupreader = csv.DictReader(datafile)
         data = list(groupreader)
-    
+        
     # Convert 2 fields to integers    
     for row in data:
         row['default_checkout_length'] = int(row['default_checkout_length'])
