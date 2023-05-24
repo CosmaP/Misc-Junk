@@ -131,20 +131,24 @@ def addlicenses(api_url, headers, license_id, licensesrequired, userdetails ):
                 currentid = username2['id']
                 payload = {"assigned_to": currentid}
                 logging.info(f'Adding License {count}: Seat {seat}:  {username2}')
-                print(f'Adding License {count}: Seat {seat}:  {username2}')
+                print(f'\n\n***************************')
+                print(f'\n\nAdding License {count}: Seat {seat}:  {username2}\n\n')
                 response = requests.put(f'{api_url}/licenses/{license_id}/seats/{seat}', headers=headers, verify=False, json=payload)
                 runcount += 1
         
                 # Check the response status code
                 # if response.status_code == 200 it has been successful:
                 if response.status_code == 200:
-                    logging.info(f'{count} User licenses added successfully!')
-                    print('\n\n' + str(count) + ' User licenses added successfully!')
+                    logging.info(f'License {count}: Seat {seat}:  {username2} added successfully!')
+                    print(f'\nLicense {count}: Seat {seat}:  {username2} added successfully!')
+                    # print(f'\n\n***************************')
                 else:
                     logging.error(f'Error adding User license {seat}: {response.content}')
                     print('\n\nError adding User license {seat}:', response.content)
                    
                 if runcount > 99:
+                    logging.info(f'Pausing for 45 seconds:')
+                    print('Pausing for 45 seconds:')
                     runcount = 0
                     wait1 = 0
                     wait2 = wait2 + 1
@@ -152,9 +156,13 @@ def addlicenses(api_url, headers, license_id, licensesrequired, userdetails ):
                         print('Pausing for 45 seconds: ', wait1, '- Loop (this is typically 1): ', wait2)
                         time.sleep(1)
                         wait1 = wait1 + 1
+                
+                    logging.info(f'Pause Over:')
+                    print('\nPause Over:\n')
                     
                 break   
  
+    print(f'\n\n***************************')
     logging.error('Users that failed:' )   
     print(f'\n\nUsers that failed:\n')
     for failure in failures:       
@@ -170,12 +178,16 @@ def main():
         userdetails = getuserids(api_url, headers, output_file)
         licensesrequired = getusernames(input_file)
         addlicenses(api_url, headers, license_id, licensesrequired, userdetails )
+        # print(licensesrequired)
         
         logging.info('End of Run')
         print("\n\n................... End of Run ................\n\n")
     except:
         logging.error('Adding user licenses had some errors. Please investigate!')
-        print("\n\n................... Adding user licenses had some errors. Please investigate ................\n\n")
+        print("\n\n................... Adding user licenses had some errors. Please investigate ................")
+        logging.info('End of Run')
+        print("\n\n................... End of Run ................\n\n")
+
         exit(1)
     
    
@@ -191,7 +203,7 @@ if __name__ == "__main__":
     except:
         logging.error('Adding user licenses had some errors. Please investigate')
         print("\n\n................... Adding user licenses had some errors. Please investigate ................\n\n")
-    
+        
         # end main
 else:
     logging.info('Importing SnipeIT.py')
