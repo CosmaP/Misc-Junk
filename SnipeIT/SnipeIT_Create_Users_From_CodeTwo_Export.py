@@ -157,13 +157,7 @@ def createdatafromcodetwoexport(input_file):
                 last_name = ''
                 name = name_match.group(1)
             
-            #if len(last_name) <= 1:
-            #    row['Email'] = first_name + '@pinnacle-oa.com'
-            #else:
-            #    row['last_name'] = names[1]
-            #    row['Email'] = names[0] + '.' + names[1] + '@pinnacle-oa.com'
-            
-            #row['number'] = ''
+
             row['id'] = 195
             row['Name'] = name
             row['first_name'] = first_name
