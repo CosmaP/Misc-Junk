@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 
 #======================================================================
+#
+# https://github.com/sigmf/sigmf-python/tree/main
+#
+# Load a SigMF archive; read all samples & metadata
+#
+#======================================================================
 # Set-up 
 
 # config.py holds credentials that should not be shared and other setup values
 import config
 from datetime import datetime
 import logging
+import sigmf
 
+input_file = config.INPUT_FILE
+output_file = config.OUTPUT_FILE
 
 ###################### Set up Logging
 logfile = config.LOGFILE
@@ -27,7 +36,7 @@ logging.basicConfig(filename=logfile, level=logging.INFO, format=FORMAT, datefmt
 
 def setup():                 # Shutdown GPIO and Cleanup modules
 
-    print ('\n\nSetting Up ...\n')
+    print ('\n\nSetting Up ...')
 
     
     
@@ -39,7 +48,7 @@ def setup():                 # Shutdown GPIO and Cleanup modules
     
 def destroy():                 # Shutdown GPIO and Cleanup modules
 
-    print ('\n\nCleaning Up ...\n')
+    print ('\n\nCleaning Up ...')
 
     #GPIO.cleanup()             # Release GPIO resource
     
@@ -51,9 +60,13 @@ def destroy():                 # Shutdown GPIO and Cleanup modules
     
 def maincontrol():                  # Main Control Loop
 
-    print ('\n\nMain Loop ...\n')
-
-# Main functionality goes here
+    print ('\n\nMain Loop ...')
+    
+    handle = sigmf.sigmffile.fromfile(input_file)
+    handle.read_samples() # returns all timeseries data
+    handle.get_global_info() # returns 'global' dictionary
+    handle.get_captures() # returns list of 'captures' dictionaries
+    handle.get_annotations() # returns list of all annotations
 
 # End of Main Control Procedure        
 #======================================================================            
@@ -65,19 +78,19 @@ if __name__ == '__main__': # If this is loaded as he main Program will start fro
         
     # Get and parse Arguments
     
-    setup()           # Setup
+    print ('\nGo ...')
 
-    print ('\nGo ...\n\n')
-	
+    setup()           # Setup
+    
     try:
         maincontrol()    # Call main loop
         destroy()     # Shutdown
-        print ('\n\n................... Exit .......................\n\n')
+        print ('\n\n................... Exit .......................')
         exit(0) # Exit Cleanly
     except KeyboardInterrupt:
         destroy()
-        print ('\n\n................... Exit .......................\n\n')
-        exit(0) # Exit Cleanly
+        print ('\n\n................... Exit .......................')
+        exit(1) # Exit Cleanly
         
 # End of __Main__ Startup Loop 
 #======================================================================

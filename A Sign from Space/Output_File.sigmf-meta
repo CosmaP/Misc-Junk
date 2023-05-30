@@ -1,0 +1,26 @@
+{
+    "global": {
+        "core:author": "cosma@papouis.net",
+        "core:datatype": "cf32_le",
+        "core:description": "All zero complex float32 example file.",
+        "core:sample_rate": 48000,
+        "core:sha512": "18790c279e0ca614c2b57a215fecc23a6c3d2d308ce77f314378cb2d1b0f413acd3a9cd353aa6da86ec9f51916925c7210f7dfabc0ef726779f8d44f227f03b1",
+        "core:version": "1.1.1"
+    },
+    "captures": [
+        {
+            "core:datetime": "2023-05-26T16:03:04.154343Z",
+            "core:frequency": 915000000,
+            "core:sample_start": 0
+        }
+    ],
+    "annotations": [
+        {
+            "core:comment": "example annotation",
+            "core:freq_lower_edge": 914995000.0,
+            "core:freq_upper_edge": 915005000.0,
+            "core:sample_count": 200,
+            "core:sample_start": 100
+        }
+    ]
+}
