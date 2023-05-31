@@ -4,8 +4,8 @@ import os
 import pandas as pd
 
 WorkingDirectory = 'C:\\Documents\\!-Synced\\OneDrive\\!!-Github_Repositories\\Misc-Junk\\Python_Pandas'
-SourceData = 'C:\\Documents\\!-Synced\\OneDrive\\!!-Github_Repositories\\Misc-Junk\\Python_Pandas\\DocProperties.csv'
-OutputData = 'C:\\Documents\\!-Synced\\OneDrive\\!!-Github_Repositories\\Misc-Junk\\Python_Pandas\\DataSummary.xlsx'
+SourceData = '.\\Lottery_Powerball_Winning_Numbers__Beginning_2010.csv'
+OutputData = '.\\Lottery_Powerball_Modified.csv'
 
 os.chdir(WorkingDirectory)
 
