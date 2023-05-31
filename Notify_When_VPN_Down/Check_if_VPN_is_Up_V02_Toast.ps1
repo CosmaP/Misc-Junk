@@ -4,6 +4,11 @@
 #
 #  Cosma Papouis : 31/05/23
 #
+#  Note:  This requires the BurntToast Module
+#         install as follows
+#         Run PowerShell as Admin
+#         Run this:  Install-Module -Name BurntToast
+#
 #######################################################################
 
 # Name of VPN to monitor
