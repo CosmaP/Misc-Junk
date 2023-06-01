@@ -34,7 +34,8 @@ function checkifvpnisup {
         $t = Get-Date
         Write-Host "POA VPN is connected at $t"
         $Result = $true 
-    } else {
+    }
+    else {
         $t = Get-Date
         Write-Warning "POA VPN is not connected at $t"
         $Result = $false
