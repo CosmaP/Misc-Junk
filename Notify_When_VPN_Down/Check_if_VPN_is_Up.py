@@ -9,7 +9,7 @@ def check_vpn_status():
         # Check if the VPN connection is active
         vpn_active = False
         for conn in psutil.net_connections():
-            if conn.status == 'ESTABLISHED' and 'vpn' in conn.raddr.ip.lower():
+            if conn.status == 'Established' and 'vpn' in conn.raddr.ip.lower():
                 vpn_active = True
                 break
 
@@ -18,7 +18,7 @@ def check_vpn_status():
             toaster = ToastNotifier()
             toaster.show_toast("VPN Disconnected", "Your Microsoft VPN has been disconnected!", duration=10)
 
-        time.sleep(60)  # Check every 60 seconds
+        time.sleep(10)  # Check every 60 seconds
 
 # Start checking VPN status
 check_vpn_status()
