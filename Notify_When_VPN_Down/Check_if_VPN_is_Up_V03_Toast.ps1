@@ -9,10 +9,16 @@
 #         Run PowerShell as Admin
 #         Run this:  Install-Module -Name BurntToast
 #
+#         To Check VPN Number
+#         Run PowerShell
+#         Run Get-NetIPInterface
+#
 #######################################################################
 
 # Name of VPN to monitor
 $VPNName = "POA VPN"
+# Number of VPN to monitor
+$VPNNumber = 79
 # How often to check in seconds
 $CheckFrequency = 10
 
@@ -29,9 +35,9 @@ function Show-ToastNotification {
 }
 
 function checkifvpnisup {
-    $VPNConnection = Get-VpnConnection -Name $VPNName
-    #if ($VPNConnection -match "POA VPN") {
-    if ($VPNConnection.ConnectionStatus -eq "Connected") {
+
+    $VPNConnection = Get-NetIPInterface -InterfaceIndex $VPNNumber -ErrorAction SilentlyContinue
+    if ($VPNConnection.ConnectionState -eq "Connected") {
         $t = Get-Date
         Write-Host "POA VPN is connected at $t"
         $Result = $true 

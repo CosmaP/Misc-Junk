@@ -38,6 +38,8 @@ function checkifvpnisup {
     else {
         $t = Get-Date
         Write-Warning "POA VPN is not connected at $t"
+        Write-Warning "POA VPN is connecting at $t"
+        rasdial $VPNName
         $Result = $false
     }
     return $Result
