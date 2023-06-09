@@ -119,6 +119,10 @@ uploadimagesviavpn.sh
 CertRenewalLogs/
 
 # Test Files
+ConnectToSQL.py
+MSSQL_ODBC.py
+MSSQL_PYMSSQL.py
+Commands.txt
 Pinnacle-logo-reduced.png
 All_Users.csv
 All_Users_Test.csv
