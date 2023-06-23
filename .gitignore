@@ -101,6 +101,7 @@ ENV/
 .mypy_cache/
 
 # Credentials
+siteinfo.py
 config.py
 testcopy.cmd
 testreset.sh
@@ -119,6 +120,7 @@ uploadimagesviavpn.sh
 CertRenewalLogs/
 
 # Test Files
+Cosma/
 ConnectToSQL.py
 MSSQL_ODBC.py
 MSSQL_PYMSSQL.py
