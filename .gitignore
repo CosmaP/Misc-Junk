@@ -103,23 +103,10 @@ ENV/
 # Credentials
 siteinfo.py
 config.py
-testcopy.cmd
-testreset.sh
-test.py
-test.html
-Orr/
-Logs/
-PicturesIn/
-PicturesOut/
-Rejects/
-.vscode/
-CertRenewalLogs/
-uploadimagesweb.sh
-uploadimageslocal.sh
-uploadimagesviavpn.sh
 CertRenewalLogs/
 
 # Test Files
+Logs
 Cosma/
 ConnectToSQL.py
 MSSQL_ODBC.py
@@ -144,6 +131,20 @@ psg_opencv.py
 psg_test01.py
 psg_test01.py
 Archive/
+testcopy.cmd
+testreset.sh
+test.py
+test.html
+Orr/
+Logs/
+PicturesIn/
+PicturesOut/
+Rejects/
+.vscode/
+CertRenewalLogs/
+uploadimagesweb.sh
+uploadimageslocal.sh
+uploadimagesviavpn.sh
 <<<<<<< HEAD
 =======
 DataSummary.xlsx

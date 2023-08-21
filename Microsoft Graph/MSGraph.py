@@ -66,6 +66,8 @@ def maincontrol():                  # Main Control Loop
     account = Account(credentials, auth_flow_type='credentials', tenant_id=my_tenant_id)
     if account.authenticate():
         print('Authenticated!')
+    else:
+        print('NOT Authenticated!')
         
     print(';')
 
